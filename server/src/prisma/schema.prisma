@@ -1,4 +1,4 @@
-// GlobeTrotter Prisma Schema
+// GlobeTrotter Database Schema
 
 generator client {
   provider = "prisma-client-js"
@@ -9,43 +9,134 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User Role Enum
+enum Role {
+  USER
+  ADMIN
+}
+
+// Activity Category Enum
+enum ActivityCategory {
+  SIGHTSEEING
+  FOOD
+  ADVENTURE
+  CULTURE
+  RELAXATION
+  OTHER
+}
+
+// User Entity
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String
-  fullName     String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  trips        Trip[]
+  id              String   @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String   @unique
+  passwordHash    String
+  phoneNumber     String?
+  city            String?
+  country         String?
+  additionalInfo  String?
+  profilePhotoUrl String?
+  role            Role     @default(USER)
+  createdAt       DateTime @default(now())
+  trips           Trip[]
 
   @@map("users")
 }
 
+// Trip Entity
 model Trip {
-  id          String        @id @default(uuid())
-  userId      String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  startDate   DateTime?
-  endDate     DateTime?
-  status      String        @default("PLANNING")
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  cities      TripCity[]
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  description   String?
+  coverPhotoUrl String?
+  startDate     DateTime?
+  endDate       DateTime?
+  isPublic      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  stops         Stop[]
+  budget        Budget?
 
+  @@index([userId])
   @@map("trips")
 }
 
-model TripCity {
-  id               String   @id @default(uuid())
-  tripId           String
-  trip             Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  cityName         String
-  countryName      String
-  stayDurationDays Int      @default(1)
-  orderIndex       Int
-  createdAt        DateTime @default(now())
+// City Entity
+model City {
+  id         String     @id @default(uuid())
+  name       String
+  country    String
+  costIndex  Int        @default(3) // 1 (budget) to 5 (luxury)
+  popularity Int        @default(50) // 1 to 100
+  imageUrl   String?
+  stops      Stop[]
+  activities Activity[]
 
-  @@map("trip_cities")
+  @@unique([name, country])
+  @@map("cities")
+}
+
+// Stop Entity (Ordered City Visit within a Trip)
+model Stop {
+  id             String         @id @default(uuid())
+  tripId         String
+  trip           Trip           @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  cityId         String
+  city           City           @relation(fields: [cityId], references: [id], onDelete: Restrict)
+  startDate      DateTime?
+  endDate        DateTime?
+  orderIndex     Int
+  stopActivities StopActivity[]
+
+  @@index([tripId])
+  @@index([cityId])
+  @@map("stops")
+}
+
+// Activity Entity (Available activities in a City)
+model Activity {
+  id             String           @id @default(uuid())
+  cityId         String
+  city           City             @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  category       ActivityCategory @default(OTHER)
+  cost           Decimal          @default(0.0) @db.Decimal(10, 2)
+  durationHours  Float            @default(1.0)
+  imageUrl       String?
+  stopActivities StopActivity[]
+
+  @@index([cityId])
+  @@map("activities")
+}
+
+// StopActivity Entity (Join Table: Stop <-> Activity)
+model StopActivity {
+  id            String    @id @default(uuid())
+  stopId        String
+  stop          Stop      @relation(fields: [stopId], references: [id], onDelete: Cascade)
+  activityId    String
+  activity      Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  scheduledDate DateTime?
+  scheduledTime String? // e.g. "10:00 AM"
+
+  @@index([stopId])
+  @@index([activityId])
+  @@map("stop_activities")
+}
+
+// Budget Entity (One-to-One with Trip)
+model Budget {
+  id             String  @id @default(uuid())
+  tripId         String  @unique
+  trip           Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  transportCost  Decimal @default(0.0) @db.Decimal(10, 2)
+  stayCost       Decimal @default(0.0) @db.Decimal(10, 2)
+  activitiesCost Decimal @default(0.0) @db.Decimal(10, 2)
+  mealsCost      Decimal @default(0.0) @db.Decimal(10, 2)
+
+  @@map("budgets")
 }

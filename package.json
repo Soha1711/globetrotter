@@ -11,7 +11,9 @@
     "install:client": "npm install --prefix client",
     "install:all": "npm install && npm run install:server && npm run install:client",
     "prisma:generate": "npm run prisma:generate --prefix server",
-    "prisma:migrate": "npm run prisma:migrate --prefix server"
+    "db:migrate": "npm run db:migrate --prefix server",
+    "db:seed": "npm run db:seed --prefix server",
+    "db:studio": "npm run db:studio --prefix server"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
