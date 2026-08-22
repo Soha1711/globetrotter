@@ -145,7 +145,8 @@ export default function PublicTripView() {
             </div>
             <span className="text-lg font-extrabold tracking-tight">
               {isPublic ? 'Trip' : 'Trip'}
-            }
+            </span>
+
           </div>
           <div className="flex items-center gap-2">
             {isPublic ? (

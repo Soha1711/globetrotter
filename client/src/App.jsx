@@ -11,6 +11,9 @@ import TripBuilder from './pages/TripBuilder';
 import TripsScreen from './pages/TripsScreen';
 import ItineraryView from './pages/ItineraryView';
 import Search from './pages/Search';
+import ProfileScreen from './pages/ProfileScreen';
+import PublicTripView from './pages/PublicTripView';
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
   return (
