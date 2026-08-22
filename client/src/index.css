@@ -17,3 +17,12 @@
 .gradient-text {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-teal-300;
 }
+
+/* Hide scrollbar for horizontal scroll rows while preserving functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
