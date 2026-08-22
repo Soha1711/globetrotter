@@ -92,6 +92,14 @@ export default function App() {
               <PublicTripView />
             }
           />
+          <Route
+            path="/admin"
+            element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
