@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { AdminProtectedRoute } from '../components/AdminProtectedRoute';
+import AdminProtectedRoute from '../components/AdminProtectedRoute';
 import {
   Globe, ArrowLeft, MapPin, Calendar, DollarSign, Eye, EyeOff, Loader2, Plus, Trash2,
-  ChevronLeft, ChevronRight, X, AlertCircle, CheckCircle2, Link, Shield, Menu,
+  ChevronLeft, ChevronRight, X, AlertCircle, CheckCircle2, Link as LinkIcon, Shield, Menu,
   Users, BarChart, LayoutGrid, Folder, PieChart, ChevronDown, Clock, TrendingUp,
   Users as UsersIcon, Map as MapIcon, Calendar as CalendarIcon, DollarSign as Money,
-  Grid, Type, Home, Settings, Search, Library, LayoutDashboard, Bar as BarChartIcon,
-  MapPin as MapPinIcon, Calendar2, Layout as LayoutIcon, Zap, ShieldCheck,
-  FolderOpen, Users as Users2, TrendingUp as TrendingUpIcon, Loader as LoaderIcon
+  Grid, Type, Home, Settings, Search, Library, LayoutDashboard,
+  Layout as LayoutIcon, Zap, ShieldCheck,
+  FolderOpen, TrendingUp as TrendingUpIcon
 } from 'lucide-react';
 
 function formatDateMD(d) {

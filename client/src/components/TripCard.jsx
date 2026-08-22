@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 function formatDate(dateStr) {
   if (!dateStr) return null;

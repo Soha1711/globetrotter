@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Globe, ArrowLeft, MapPin, Calendar, DollarSign, Eye, EyeOff,
-  Loader2, Plus, Trash2, Edit3, Save, X, AlertCircle, CheckCircle2
+  Loader2, Plus, Trash2, Edit3, Save, X, AlertCircle, CheckCircle2,
+  LogOut, Clock1
 } from 'lucide-react';
 
 export default function ProfileScreen() {
