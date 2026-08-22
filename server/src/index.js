@@ -7,6 +7,7 @@ const activityRoutes = require('./routes/activity.routes');
 const cityRoutes = require('./routes/city.routes');
 const tripRoutes = require('./routes/trip.routes');
 const stopRoutes = require('./routes/stop.routes');
+const adminRoutes = require('./routes/admin.routes');
 const { errorHandler } = require('./middleware/error.middleware');
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api/activities', activityRoutes);
 app.use('/api/cities', cityRoutes);
 app.use('/api/trips', tripRoutes);
 app.use('/api/stops', stopRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
   res.json({

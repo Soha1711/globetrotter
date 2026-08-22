@@ -1,7 +1,7 @@
 const express = require('express');
-const { createTrip, getUserTrips, getTripById, getTripBudget, updateTripBudget, getTripsCalendar, copyTrip } = require('../controllers/trip.controller');
+const { createTrip, getUserTrips, getTripById, getTripBudget, updateTripBudget, getTripsCalendar, copyTrip, makeTripPublic } = require('../controllers/trip.controller');
 const { createStop, updateStop, deleteStop } = require('../controllers/stop.controller');
-const { authenticateToken } = require('../middleware/auth.middleware');
+const { authenticateToken, authorizeRole } = require('../middleware/auth.middleware');
 
 const router = express.Router();
 

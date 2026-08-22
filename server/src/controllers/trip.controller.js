@@ -315,17 +315,18 @@ const getTripsCalendar = async (req, res, next) => {
           { endDate: { gt: startOfMonth, lte: startOfNextMonth } },
           // Trip encompasses the entire month
           { startDate: { lte: startOfMonth }, endDate: { gte: startOfNextMonth } }
-        ],
-        include: {
-          stops: {
-            include: {
-              stopActivities: {
-                include: { activity: true }
-              }
+        ]
+      },
+      include: {
+        stops: {
+          include: {
+            stopActivities: {
+              include: { activity: true }
             }
           }
         }
-      });
+      }
+    });
 
     res.status(200).json({
       success: true,
@@ -402,9 +403,9 @@ const copyTrip = async (req, res, next) => {
           }))
         }
       },
-      include {
+      include: {
         stops: {
-          include {
+          include: {
             city: true,
             stopActivities: {
               include: { activity: true }

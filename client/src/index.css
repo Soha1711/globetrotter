@@ -3,26 +3,119 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-slate-950 text-slate-100 min-h-screen selection:bg-blue-500 selection:text-white;
+  :root {
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'Source Code Pro', monospace;
   }
-}
 
-.glass-card {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+  /* Light Theme Tokens: Cream & Sienna Postcard */
+  [data-theme='light'] {
+    --bg-page: #F7F0E2;
+    --bg-card: #FFFDF8;
+    --bg-subtle: #FDECEA;
+    --text-primary: #2D251F;
+    --text-secondary: #6B6255;
+    --accent-travel: #C46B2E;
+  }
 
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-teal-300;
-}
+  /* Dark Theme Tokens: Night Sky & Route Map */
+  [data-theme='dark'] {
+    --bg-page: #1A1C2E;
+    --bg-card: #1E2136;
+    --bg-subtle: #0D1020;
+    --text-primary: #F2F0F5;
+    --text-secondary: #A5B0C3;
+    --accent-travel: #E9833B;
+  }
 
-/* Hide scrollbar for horizontal scroll rows while preserving functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+  .font-display { font-family: var(--font-display); }
+  .font-body { font-family: var(--font-body); }
+  .font-mono { font-family: var(--font-mono); }
+
+  /* Base Styles */
+  * { box-sizing: border-box; }
+  body { 
+    font-family: var(--font-body); 
+    background-color: var(--bg-page); 
+    color: var(--text-primary); 
+    transition: background-color 0.3s, color 0.3s; 
+    min-height: 100vh; 
+  }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); font-weight: 600; color: var(--text-primary); }
+  p, span, div, li { font-family: var(--font-body); font-weight: 400; line-height: 1.6; }
+  .monospace, .font-mono { font-family: var(--font-mono); }
+  .display-h1 { font-size: 2.5rem; font-weight: 700; }
+  .display-h2 { font-size: 2rem; font-weight: 600; }
+  .display-h3 { font-size: 1.75rem; font-weight: 600; }
+  .body-large { font-size: 1.125rem; }
+  .body-medium { font-size: 1rem; }
+  .caption { font-size: 0.875rem; color: var(--text-secondary); }
+
+  /* Boarding-pass card signature: perforated edge */
+  .perforated-edge {
+    position: relative;
+    padding-top: 0.75rem;
+  }
+  .perforated-edge::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 0;
+    height: 3px;
+    background: currentColor;
+    mask: repeating-conic-gradient(
+      from 0deg,
+      transparent,
+      transparent 3deg,
+      currentColor 3deg,
+      currentColor 6deg
+    );
+    mask-size: 20px 3px;
+  }
+
+  /* Status postmark stripe */
+  .postmark-stripe {
+    height: 24px;
+    background: var(--accent-travel);
+    border-radius: 0 0 4px 4px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Icon styling: currentColor, normalized size */
+  .lucide-icon {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: currentColor;
+  }
+
+  /* Masonry grid container */
+  .masonry-grid {
+    --gap: 1.5rem;
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-auto-rows: minmax(min(100%, 320px), 1fr);
+  }
+
+  @media (max-width: 768px) {
+    .masonry-grid { --gap: 1rem; grid-auto-rows: minmax(min(100%, 280px), 1fr); }
+  }
+  @media (max-width: 375px) {
+    .masonry-grid { --gap: 0.75rem; grid-auto-rows: minmax(min(100%, 240px), 1fr); }
+  }
+
+  /* Map-contour texture background at 2-3% opacity */
+  .page-bg {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-color: var(--bg-page);
+    background-blend-mode: overlay;
+    opacity: 0.97;
+  }
 }
