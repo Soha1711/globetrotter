@@ -338,7 +338,7 @@ export default function ProfileScreen() {
                   );
                 })}
               </div>
-            ) : null}
+            )}
           </div>
 
           {/* ── Previous Trips ── */}
@@ -378,7 +378,7 @@ export default function ProfileScreen() {
                   );
                 })}
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </div>
