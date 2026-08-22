@@ -27,6 +27,23 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
+/**
+ * Authorization Middleware: Checks if user has the required role
+ * @param {String} requiredRole - Role required to access the route (e.g. "ADMIN")
+ */
+const authorizeRole = (requiredRole) => {
+  return (req, res, next) => {
+    if (!req.user || req.user.role !== requiredRole) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin role required.'
+      });
+    }
+    next();
+  };
+};
+
 module.exports = {
-  authenticateToken
+  authenticateToken,
+  authorizeRole
 };

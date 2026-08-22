@@ -456,6 +456,92 @@ const makeTripPublic = async (req, res, next) => {
   }
 };
 
+const getAdminUsers = async (req, res, next) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        role: true,
+        city: true,
+        country: true,
+        profilePhotoUrl: true,
+        createdAt: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getPopularCities = async (req, res, next) => {
+  try {
+    const cities = await prisma.city.findMany({
+      select: {
+        id: true,
+        name: true,
+        country: true,
+        _count: {
+          select: { stops: true }
+        }
+      },
+      orderBy: { _count: { stops: 'desc' } },
+      take: 10
+    });
+    res.status(200).json({ success: true, cities });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getPopularActivities = async (req, res, next) => {
+  try {
+    const activities = await prisma.activity.findMany({
+      select: {
+        id: true,
+        name: true,
+        category: true,
+        _count: {
+          select: { stopActivities: true }
+        }
+      },
+      orderBy: { _count: { stopActivities: 'desc' } },
+      take: 10
+    });
+    res.status(200).json({ success: true, activities });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getTrends = async (req, res, next) => {
+  try {
+    const trends = await prisma.trip.groupBy({
+      by: ['createdAt'],
+      _count: { id: true },
+      orderBy: { createdAt: 'asc' }
+    });
+    // Format into months
+    const monthlyData = {};
+    trends.forEach(item => {
+      const month = new Date(item.createdAt).toISOString().slice(0, 7); // YYYY-MM
+      if (!monthlyData[month]) monthlyData[month] = 0;
+      monthlyData[month] += item._count.id;
+    });
+    // Sort by month and convert to arrays
+    const sortedMonths = Object.keys(monthlyData).sort();
+    const labels = sortedMonths.map(m => new Date(m).toLocaleString('default', { month: 'short' } + ' ' + new Date(m).getDate()));
+    const data = sortedMonths.map(m => monthlyData[m]);
+    res.status(200).json({ success: true, labels, data });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createTrip,
   getUserTrips,
@@ -464,5 +550,9 @@ module.exports = {
   updateTripBudget,
   getTripsCalendar,
   copyTrip,
-  makeTripPublic
+  makeTripPublic,
+  getAdminUsers,
+  getPopularCities,
+  getPopularActivities,
+  getTrends
 };
