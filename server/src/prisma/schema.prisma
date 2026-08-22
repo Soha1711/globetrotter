@@ -70,6 +70,8 @@ model Stop {
   trip           Trip           @relation(fields: [tripId], references: [id], onDelete: Cascade)
   cityId         String
   city           City           @relation(fields: [cityId], references: [id], onDelete: Restrict)
+  title          String? // Editable section title; defaults to city name on the client
+  budget         Float? // Budget of this section
   startDate      DateTime?
   endDate        DateTime?
   orderIndex     Int
@@ -107,6 +109,7 @@ model StopActivity {
   scheduledDate DateTime?
   scheduledTime String? // e.g. "10:00 AM"
 
+  @@unique([stopId, activityId])
   @@index([stopId])
   @@index([activityId])
   @@map("stop_activities")

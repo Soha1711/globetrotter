@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import MainLanding from './pages/MainLanding';
 import CreateTrip from './pages/CreateTrip';
 import TripDetail from './pages/TripDetail';
+import TripBuilder from './pages/TripBuilder';
 
 export default function App() {
   return (
@@ -39,6 +40,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <TripDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trips/:tripId/build"
+            element={
+              <ProtectedRoute>
+                <TripBuilder />
               </ProtectedRoute>
             }
           />

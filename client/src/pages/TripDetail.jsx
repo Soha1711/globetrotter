@@ -85,6 +85,14 @@ export default function TripDetail() {
               {trip.isPublic ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
               {trip.isPublic ? 'Public' : 'Private'}
             </span>
+            <button
+              id="edit-itinerary-btn"
+              onClick={() => navigate(`/trips/${trip.id}/build`)}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-600/20 hover:from-blue-500 hover:to-indigo-500 transition-all active:scale-[0.98]"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              Edit Itinerary
+            </button>
           </div>
         </div>
       </header>
@@ -133,7 +141,13 @@ export default function TripDetail() {
             <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed border-slate-800 rounded-2xl">
               <MapPin className="w-10 h-10 text-slate-700 mb-3" />
               <p className="text-slate-400 font-semibold mb-1">No stops planned yet</p>
-              <p className="text-sm text-slate-500">Add cities and activities to build your itinerary.</p>
+              <p className="text-sm text-slate-500 mb-5">Add cities and activities to build your itinerary.</p>
+              <button
+                onClick={() => navigate(`/trips/${trip.id}/build`)}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-600/20 hover:from-blue-500 hover:to-indigo-500 transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" /> Build Itinerary
+              </button>
             </div>
           ) : (
             <div className="space-y-6">

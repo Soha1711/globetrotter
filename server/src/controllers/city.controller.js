@@ -71,7 +71,40 @@ const getCityById = async (req, res, next) => {
   }
 };
 
+/**
+ * @route   GET /api/cities/:id/activities
+ * @desc    Get all activities available in a given city
+ * @access  Public
+ */
+const getCityActivities = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const city = await prisma.city.findUnique({
+      where: { id },
+      include: {
+        activities: {
+          orderBy: { name: 'asc' }
+        }
+      }
+    });
+
+    if (!city) {
+      return res.status(404).json({ success: false, message: 'City not found.' });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: city.activities.length,
+      activities: city.activities
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCities,
-  getCityById
+  getCityById,
+  getCityActivities
 };
