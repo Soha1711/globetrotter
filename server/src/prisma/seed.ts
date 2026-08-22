@@ -601,6 +601,72 @@ async function main() {
   });
 
   console.log(`✈️ Created Sample Trip: "${sampleTrip.name}" (ID: ${sampleTrip.id}) with ${sampleTrip.stops.length} stops.`);
+
+  // Ongoing Trip (current dates around August 2026)
+  const tokyoCity = createdCities.find((c) => c.name === 'Tokyo')!;
+  const ongoingTrip = await prisma.trip.create({
+    data: {
+      userId: demoUser.id,
+      name: 'Tokyo Modern & Tradition Tour',
+      description: 'Currently exploring Tokyo Shibuya and Asakusa districts.',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26',
+      startDate: new Date('2026-08-20T00:00:00Z'),
+      endDate: new Date('2026-08-30T00:00:00Z'),
+      isPublic: true,
+      stops: {
+        create: [
+          {
+            cityId: tokyoCity.id,
+            orderIndex: 0,
+            startDate: new Date('2026-08-20T00:00:00Z'),
+            endDate: new Date('2026-08-30T00:00:00Z'),
+          }
+        ]
+      },
+      budget: {
+        create: {
+          transportCost: 800.00,
+          stayCost: 1500.00,
+          activitiesCost: 200.00,
+          mealsCost: 600.00,
+        }
+      }
+    }
+  });
+  console.log(`✈️ Created Ongoing Trip: "${ongoingTrip.name}" (ID: ${ongoingTrip.id}).`);
+
+  // Past / Completed Trip
+  const barcelonaCity = createdCities.find((c) => c.name === 'Barcelona')!;
+  const completedTrip = await prisma.trip.create({
+    data: {
+      userId: demoUser.id,
+      name: 'Summer in Barcelona',
+      description: 'Relaxing beach getaway and Gaudi architecture walk.',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4',
+      startDate: new Date('2026-07-01T00:00:00Z'),
+      endDate: new Date('2026-07-10T00:00:00Z'),
+      isPublic: false,
+      stops: {
+        create: [
+          {
+            cityId: barcelonaCity.id,
+            orderIndex: 0,
+            startDate: new Date('2026-07-01T00:00:00Z'),
+            endDate: new Date('2026-07-10T00:00:00Z'),
+          }
+        ]
+      },
+      budget: {
+        create: {
+          transportCost: 400.00,
+          stayCost: 900.00,
+          activitiesCost: 150.00,
+          mealsCost: 450.00,
+        }
+      }
+    }
+  });
+  console.log(`✈️ Created Completed Trip: "${completedTrip.name}" (ID: ${completedTrip.id}).`);
   console.log('✅ Seeding completed successfully!');
 }
 

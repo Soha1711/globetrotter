@@ -131,7 +131,7 @@ const getUserTrips = async (req, res, next) => {
  */
 const getTripById = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const id = req.params.tripId || req.params.id;
 
     const trip = await prisma.trip.findUnique({
       where: { id },
@@ -174,7 +174,7 @@ const getTripById = async (req, res, next) => {
  */
 const getTripBudget = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const id = req.params.tripId || req.params.id;
 
     const trip = await prisma.trip.findUnique({
       where: { id },
@@ -231,8 +231,16 @@ const getTripBudget = async (req, res, next) => {
  */
 const updateTripBudget = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const id = req.params.tripId || req.params.id;
     const { transportCost, stayCost, mealsCost } = req.body;
+
+    const trip = await prisma.trip.findUnique({ where: { id } });
+    if (!trip) {
+      return res.status(404).json({ success: false, message: 'Trip not found.' });
+    }
+    if (trip.userId !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'You do not have permission to modify this trip.' });
+    }
 
     if (transportCost !== undefined && (isNaN(transportCost) || transportCost < 0)) {
       return res.status(400).json({ success: false, message: 'transportCost must be a non-negative number.' });
@@ -244,12 +252,20 @@ const updateTripBudget = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'mealsCost must be a non-negative number.' });
     }
 
-    const updated = await prisma.trip.update({
-      where: { id },
-      data: {
-        transportCost: transportCost !== undefined ? Number(transportCost) : undefined,
-        stayCost: stayCost !== undefined ? Number(stayCost) : undefined,
-        mealsCost: mealsCost !== undefined ? Number(mealsCost) : undefined,
+    const updateFields = {};
+    if (transportCost !== undefined) updateFields.transportCost = Number(transportCost);
+    if (stayCost !== undefined) updateFields.stayCost = Number(stayCost);
+    if (mealsCost !== undefined) updateFields.mealsCost = Number(mealsCost);
+
+    const updatedBudget = await prisma.budget.upsert({
+      where: { tripId: id },
+      update: updateFields,
+      create: {
+        tripId: id,
+        transportCost: transportCost !== undefined ? Number(transportCost) : 0.0,
+        stayCost: stayCost !== undefined ? Number(stayCost) : 0.0,
+        mealsCost: mealsCost !== undefined ? Number(mealsCost) : 0.0,
+        activitiesCost: 0.0,
       }
     });
 
@@ -257,10 +273,182 @@ const updateTripBudget = async (req, res, next) => {
       success: true,
       message: 'Budget updated successfully!',
       budget: {
-        transportCost: updated.transportCost,
-        stayCost: updated.stayCost,
-        activitiesCost: updated.budget?.activitiesCost || 0,
-        mealsCost: updated.mealsCost,
+        transportCost: updatedBudget.transportCost,
+        stayCost: updatedBudget.stayCost,
+        activitiesCost: updatedBudget.activitiesCost,
+        mealsCost: updatedBudget.mealsCost,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @route   GET /api/trips/calendar
+ * @desc    Get trips calendar view
+ * @access  Private
+ */
+const getTripsCalendar = async (req, res, next) => {
+  try {
+    const { month, year } = req.query;
+
+    if (!month || !year) {
+      return res.status(400).json({ success: false, message: 'month and year query parameters are required.' });
+    }
+
+    const monthNum = parseInt(month, 10);
+    const yearNum = parseInt(year, 10);
+    const nextMonth = monthNum + 1;
+    const nextYear = yearNum;
+
+    // Build date range for the requested month
+    const startOfMonth = new Date(Date.UTC(yearNum, monthNum, 1));
+    const startOfNextMonth = new Date(Date.UTC(nextYear, nextMonth, 1));
+
+    const trips = await prisma.trip.findMany({
+      where: {
+        OR: [
+          // Trip starts within this month
+          { startDate: { gte: startOfMonth, lt: startOfNextMonth } },
+          // Trip ends within this month
+          { endDate: { gt: startOfMonth, lte: startOfNextMonth } },
+          // Trip encompasses the entire month
+          { startDate: { lte: startOfMonth }, endDate: { gte: startOfNextMonth } }
+        ],
+        include: {
+          stops: {
+            include: {
+              stopActivities: {
+                include: { activity: true }
+              }
+            }
+          }
+        }
+      });
+
+    res.status(200).json({
+      success: true,
+      month: monthNum,
+      year: yearNum,
+      trips
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @route   POST /api/trips/:tripId/copy
+ * @desc    Copy a trip (and its stops/activities) to the current user's account
+ * @access  Private
+ */
+const copyTrip = async (req, res, next) => {
+  try {
+    const { tripId } = req.params;
+
+    const sourceTrip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        stops: {
+          include: {
+            stopActivities: {
+              include: { activity: true }
+            }
+          }
+        }
+      }
+    });
+
+    if (!sourceTrip) {
+      return res.status(404).json({ success: false, message: 'Trip not found.' });
+    }
+
+    if (sourceTrip.userId !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'You do not have permission to copy this trip.' });
+    }
+
+    // Create new trip with same data
+    const newTrip = await prisma.trip.create({
+      data: {
+        userId: req.user.id,
+        name: sourceTrip.name,
+        description: sourceTrip.description,
+        coverPhotoUrl: sourceTrip.coverPhotoUrl,
+        startDate: sourceTrip.startDate,
+        endDate: sourceTrip.endDate,
+        isPublic: sourceTrip.isPublic,
+        budget: sourceTrip.budget ? {
+          create: {
+            transportCost: sourceTrip.budget.transportCost,
+            stayCost: sourceTrip.budget.stayCost,
+            activitiesCost: sourceTrip.budget.activitiesCost,
+            mealsCost: sourceTrip.budget.mealsCost
+          }
+        } : undefined,
+        stops: {
+          create: sourceTrip.stops.map(stop => ({
+            cityId: stop.cityId,
+            orderIndex: stop.orderIndex,
+            startDate: stop.startDate,
+            endDate: stop.endDate,
+            stopActivities: {
+              create: stop.stopActivities.map(sa => ({
+                activityId: sa.activityId,
+                scheduledDate: sa.scheduledDate,
+                scheduledTime: sa.scheduledTime
+              }))
+            }
+          }))
+        }
+      },
+      include {
+        stops: {
+          include {
+            city: true,
+            stopActivities: {
+              include: { activity: true }
+            }
+          }
+        }
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Trip copied successfully!',
+      trip: newTrip
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const makeTripPublic = async (req, res, next) => {
+  try {
+    const { tripId } = req.params;
+
+    const trip = await prisma.trip.findUnique({ where: { id: tripId } });
+    if (!trip) {
+      return res.status(404).json({ success: false, message: 'Trip not found.' });
+    }
+
+    if (trip.userId !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'You do not have permission to modify this trip.' });
+    }
+
+    const updated = await prisma.trip.update({
+      where: { id: tripId },
+      data: { isPublic: true }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Trip made public successfully!',
+      trip: {
+        id: updated.id,
+        name: updated.name,
+        isPublic: updated.isPublic
       }
     });
   } catch (error) {
@@ -273,5 +461,8 @@ module.exports = {
   getUserTrips,
   getTripById,
   getTripBudget,
-  updateTripBudget
+  updateTripBudget,
+  getTripsCalendar,
+  copyTrip,
+  makeTripPublic
 };

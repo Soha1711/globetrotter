@@ -185,8 +185,48 @@ const getMe = async (req, res, next) => {
   }
 };
 
+/**
+ * @route   PUT /api/users/me
+ * @desc    Update current user profile
+ * @access  Private
+ */
+const updateMe = async (req, res, next) => {
+  try {
+    const { firstName, lastName, email, city, country, additionalInfo, profilePhotoUrl } = req.body;
+
+    const updateData = {
+      firstName: firstName && firstName.trim() ? firstName.trim() : undefined,
+      lastName: lastName && lastName.trim() ? lastName.trim() : undefined,
+      email: email && email.trim() ? email.trim().toLowerCase() : undefined,
+      city: city && city.trim() ? city.trim() : undefined,
+      country: country && country.trim() ? country.trim() : undefined,
+      additionalInfo: additionalInfo && additionalInfo.trim() ? additionalInfo.trim() : undefined,
+      profilePhotoUrl: profilePhotoUrl && profilePhotoUrl.trim() ? profilePhotoUrl.trim() : undefined,
+    };
+
+    // Remove undefined values so Prisma only updates provided fields
+    const filteredUpdateData = Object.fromEntries(
+      Object.entries(updateData).filter(([_, v]) => v !== undefined)
+    );
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data: filteredUpdateData
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully!',
+      user: sanitizeUser(user)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  updateMe
 };

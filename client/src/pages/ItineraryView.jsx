@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  Globe, ArrowLeft, MapPin, Calendar, DollarSign, Eye, Loader2, Plus, Trash2, SlidersHorizontal, Filter, LayoutGrid, Clock, Calendar as CalendarIcon,
-  ChevronDown, X, GitBranch
+  Globe, ArrowLeft, MapPin, Calendar, DollarSign, Eye, EyeOff, Loader2, Plus, Trash2, SlidersHorizontal, Filter, LayoutGrid, Clock, Calendar as CalendarIcon,
+  ChevronDown, X, GitBranch, Lock, Unlock
 } from 'lucide-react';
 import {
-  BarChart, BarChart as RechartsBarChart, Bar as RechartsBar,
-  PieChart, Pie as RechartsPie, Tooltip, Legend, ResponsiveContainer
+  BarChart, Bar, CartesianGrid, XAxis, YAxis,
+  PieChart, Pie, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
 // Category colors matching TripDetail.jsx
@@ -255,6 +255,33 @@ export default function ItineraryView() {
               {trip.isPublic ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
               {trip.isPublic ? 'Public' : 'Private'}
             </span>
+            {user && user.id === trip.userId && !trip.isPublic && (
+              <button
+                onClick={() => {
+                  if (window.confirm('Make this trip public? This will generate a shareable link that anyone can view.')) {
+                    fetch(`/api/trips/${trip.id}/make-public`, {
+                      method: 'POST',
+                      headers: { Authorization: `Bearer ${token}` }
+                    })
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.success) {
+                          // Reload the trip data to reflect the new public status
+                          window.location.reload();
+                        } else {
+                          alert('Failed to make trip public: ' + (data.message || 'unknown error'));
+                        }
+                      })
+                      .catch(() => alert('Failed to make trip public.'));
+                  }
+                }}
+                className="ml-2 px-2.5 py-1 rounded-lg border border-emerald-600 bg-emerald-600/10 text-emerald-400 hover:text-white hover:bg-emerald-700 transition-colors text-xs font-medium"
+                title="Make trip public"
+              >
+                <Lock className="w-3 h-3" />
+                <span>Public</span>
+              </button>
+            )}
           </div>
         </div>
       </header>

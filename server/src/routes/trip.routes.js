@@ -1,5 +1,5 @@
 const express = require('express');
-const { createTrip, getUserTrips, getTripById, getTripBudget, updateTripBudget } = require('../controllers/trip.controller');
+const { createTrip, getUserTrips, getTripById, getTripBudget, updateTripBudget, getTripsCalendar, copyTrip } = require('../controllers/trip.controller');
 const { createStop, updateStop, deleteStop } = require('../controllers/stop.controller');
 const { authenticateToken } = require('../middleware/auth.middleware');
 
@@ -13,6 +13,9 @@ router.post('/', createTrip);
 router.get('/:tripId', getTripById);
 router.get('/:tripId/budget', getTripBudget);
 router.put('/:tripId/budget', updateTripBudget);
+router.get('/:tripId/calendar', getTripsCalendar);
+router.post('/:tripId/copy', copyTrip);
+router.post('/:tripId/make-public', makeTripPublic);
 
 // Nested stop management
 router.post('/:tripId/stops', createStop);

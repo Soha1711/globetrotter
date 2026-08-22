@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   Globe, Search, SlidersHorizontal, LogOut, Plus, User as UserIcon,
   MapPin, Calendar, ChevronDown, X, TrendingUp, Clock, Calendar as CalendarIcon,
-  LayoutGrid, Filter, Clock1, Flag, Eye, EyeOff, Sliders
+  LayoutGrid, Filter, Clock1, Flag, Eye, EyeOff, Sliders, Compass
 } from 'lucide-react';
 
 const SORT_OPTIONS = [
@@ -60,25 +60,18 @@ export default function TripsScreen() {
   }, []);
 
   // Helper: bucket trip by status relative to today
-  const today = new Date();
   const bucketTrip = (trip) => {
     const start = trip.startDate ? new Date(trip.startDate) : null;
     const end = trip.endDate ? new Date(trip.endDate) : null;
-    const now = today;
+    const now = new Date();
 
-    // If no dates, treat as ongoing/unspecified
-    if (!start && !end) return 'ongoing';
-
-    // Ongoing: today falls within start/end (inclusive)
-    if (start && end) {
-      return now >= start && now <= end ? 'ongoing' : 'past'; // simplified: if today is between, ongoing; else past
+    if (start && now < start) {
+      return 'upcoming';
     }
-    // If only start date, ongoing if today >= start
-    if (start && !end) return now >= start ? 'ongoing' : 'past';
-    // If only end date, ongoing if today <= end
-    if (!start && end) return now <= end ? 'ongoing' : 'past';
-
-    return 'past';
+    if (end && now > end) {
+      return 'past';
+    }
+    return 'ongoing';
   };
 
   // Client-side filtered/sorted trips
@@ -94,9 +87,15 @@ export default function TripsScreen() {
       );
     }
 
-    // Filter by status
+    // Filter by status or visibility
     if (filterBy !== 'all') {
-      result = result.filter(t => bucketTrip(t).value === filterBy || bucketTrip(t).label === filterBy);
+      if (filterBy === 'public') {
+        result = result.filter(t => t.isPublic);
+      } else if (filterBy === 'private') {
+        result = result.filter(t => !t.isPublic);
+      } else {
+        result = result.filter(t => bucketTrip(t) === filterBy);
+      }
     }
 
     // Sort
@@ -125,7 +124,11 @@ export default function TripsScreen() {
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
-            <Link to="/" className="text-white font-semibold">Dashboard</Link>
+            <Link to="/" className="hover:text-white transition-colors">Dashboard</Link>
+            <Link to="/trips" className="text-white font-semibold">My Trips</Link>
+            <Link to="/search" className="hover:text-white transition-colors flex items-center gap-1.5">
+              <Compass className="w-4 h-4" /> Explore
+            </Link>
             <Link to="/trips/new" className="hover:text-white transition-colors">Plan Trip</Link>
           </nav>
 
@@ -135,12 +138,11 @@ export default function TripsScreen() {
               : <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center">
                   <UserIcon className="w-4 h-4 text-slate-300" />
                 </div>
-              }
-              <div className="hidden md:block">
-                <p className="text-xs font-bold leading-tight">{user?.firstName} {user?.lastName}</p>
-                <p className="text-[10px] text-slate-400">{user?.city || user?.country || 'Traveller'}</p>
-              </div>
             }
+            <div className="hidden md:block">
+              <p className="text-xs font-bold leading-tight">{user?.firstName} {user?.lastName}</p>
+              <p className="text-[10px] text-slate-400">{user?.city || user?.country || 'Traveller'}</p>
+            </div>
             <button onClick={logout} className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 hover:border-rose-500/30 transition-colors" title="Logout">
               <LogOut className="w-4 h-4" />
             </button>
@@ -294,7 +296,7 @@ export default function TripsScreen() {
                     </div>
                   );
                 })}
-                {sections.length === 0 || !filteredTrips.some(t => bucketTrip(t) === 'ongoing') ? (
+                {!filteredTrips.some(t => bucketTrip(t) === 'ongoing') ? (
                   <p className="text-sm text-slate-500 py-6">No ongoing trips planned.</p>
                 ) : null}
               </div>

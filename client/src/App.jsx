@@ -7,8 +7,10 @@ import Register from './pages/Register';
 import MainLanding from './pages/MainLanding';
 import CreateTrip from './pages/CreateTrip';
 import TripDetail from './pages/TripDetail';
+import TripBuilder from './pages/TripBuilder';
 import TripsScreen from './pages/TripsScreen';
 import ItineraryView from './pages/ItineraryView';
+import Search from './pages/Search';
 
 export default function App() {
   return (
@@ -61,11 +63,33 @@ export default function App() {
             }
           />
           <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfileScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/trips/:tripId/view"
             element={
               <ProtectedRoute>
                 <ItineraryView />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <Search />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/public/trips/:tripId"
+            element={
+              <PublicTripView />
             }
           />
         </Routes>

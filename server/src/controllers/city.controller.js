@@ -3,21 +3,25 @@ const prisma = new PrismaClient();
 
 /**
  * @route   GET /api/cities
- * @desc    Get cities with optional search and limit
+ * @desc    Get cities with optional search, country filter and limit
  * @access  Public
  */
 const getCities = async (req, res, next) => {
   try {
-    const { search, limit } = req.query;
+    const { search, country, limit } = req.query;
 
-    const whereClause = search
-      ? {
-          OR: [
-            { name: { contains: search } },
-            { country: { contains: search } }
-          ]
-        }
-      : {};
+    const whereClause = {};
+
+    if (search) {
+      whereClause.OR = [
+        { name: { contains: search } },
+        { country: { contains: search } }
+      ];
+    }
+
+    if (country) {
+      whereClause.country = { contains: country };
+    }
 
     const takeCount = limit ? parseInt(limit, 10) : undefined;
 
