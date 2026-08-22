@@ -1,0 +1,51 @@
+// GlobeTrotter Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  trips        Trip[]
+
+  @@map("users")
+}
+
+model Trip {
+  id          String        @id @default(uuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      String        @default("PLANNING")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  cities      TripCity[]
+
+  @@map("trips")
+}
+
+model TripCity {
+  id               String   @id @default(uuid())
+  tripId           String
+  trip             Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  cityName         String
+  countryName      String
+  stayDurationDays Int      @default(1)
+  orderIndex       Int
+  createdAt        DateTime @default(now())
+
+  @@map("trip_cities")
+}
