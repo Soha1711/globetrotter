@@ -1,4 +1,4 @@
-import { PrismaClient, Role, ActivityCategory } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -32,7 +32,7 @@ async function main() {
       country: 'United States',
       additionalInfo: 'Passionate travel enthusiast exploring culinary & cultural destinations worldwide.',
       profilePhotoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
-      role: Role.USER,
+      role: 'USER',
     },
   });
 
@@ -45,7 +45,7 @@ async function main() {
       phoneNumber: '+1-555-000-0000',
       city: 'London',
       country: 'United Kingdom',
-      role: Role.ADMIN,
+      role: 'ADMIN',
     },
   });
 
@@ -63,7 +63,7 @@ async function main() {
         {
           name: 'Eiffel Tower Sunset Tour',
           description: 'Ascend to the summit of the Eiffel Tower for panoramic evening views over the Seine.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 35.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f',
@@ -71,7 +71,7 @@ async function main() {
         {
           name: 'Louvre Museum Masterpieces Walk',
           description: 'Explore world-renowned art including the Mona Lisa and Venus de Milo with an expert guide.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 45.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a',
@@ -79,7 +79,7 @@ async function main() {
         {
           name: 'Montmartre Bakery & Pastry Crawl',
           description: 'Taste fresh croissants, macarons, and artisanal baguettes through historic Montmartre.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 50.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff',
@@ -87,7 +87,7 @@ async function main() {
         {
           name: 'Seine River Evening Dinner Cruise',
           description: 'Glide past illuminated Parisian landmarks while dining on gourmet 3-course French cuisine.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 95.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1549144511-f099e773c147',
@@ -95,7 +95,7 @@ async function main() {
         {
           name: 'Catacombs Underground Exploration',
           description: 'Descend into the subterranean labyrinth holding the history of Paris.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 29.00,
           durationHours: 1.5,
           imageUrl: 'https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b',
@@ -112,7 +112,7 @@ async function main() {
         {
           name: 'Shibuya Crossing & Harajuku Culture Walking Tour',
           description: 'Experience the world busiest intersection and youth fashion district.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 20.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989',
@@ -120,7 +120,7 @@ async function main() {
         {
           name: 'Tsukiji Outer Market Food Tasting',
           description: 'Sample fresh sashimi, tamagoyaki, and wagyu skewers at Tokyo famed market.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 65.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb',
@@ -128,7 +128,7 @@ async function main() {
         {
           name: 'Senso-ji Temple & Asakusa Heritage Walk',
           description: 'Visit Tokyo oldest Buddhist temple and shop along Nakamise-dori.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 15.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1578637387939-43c525550085',
@@ -136,7 +136,7 @@ async function main() {
         {
           name: 'Mount Fuji Day Excursion & Onsen Bath',
           description: 'Day trip to 5th Station of Mt. Fuji ending with relaxing hot spring soak.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 120.00,
           durationHours: 8.0,
           imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e',
@@ -144,7 +144,7 @@ async function main() {
         {
           name: 'Traditional Tea Ceremony Experience',
           description: 'Learn the meditative art of matcha preparation from a licensed tea master.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 40.00,
           durationHours: 1.5,
           imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3',
@@ -161,7 +161,7 @@ async function main() {
         {
           name: 'Colosseum & Roman Forum Priority Tour',
           description: 'Step into gladiatorial history with fast-track access to the arena floor.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 48.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5',
@@ -169,7 +169,7 @@ async function main() {
         {
           name: 'Vatican Museums & Sistine Chapel Tour',
           description: 'Marvel at Michelangelo frescoes and papal art collections.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 55.00,
           durationHours: 3.5,
           imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7',
@@ -177,7 +177,7 @@ async function main() {
         {
           name: 'Trastevere Pasta & Gelato Masterclass',
           description: 'Handcraft fresh fettuccine and tiramisu guided by a Roman chef.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 75.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141',
@@ -185,7 +185,7 @@ async function main() {
         {
           name: 'Trevi Fountain & Spanish Steps Evening Stroll',
           description: 'Discover the romantic squares and fountains under starlight.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 0.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1531572753322-ad063cecc140',
@@ -193,7 +193,7 @@ async function main() {
         {
           name: 'Appian Way Electric Bike Adventure',
           description: 'Cycle along ancient Roman roads, catacombs, and aqueduct parks.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 40.00,
           durationHours: 3.5,
           imageUrl: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963',
@@ -210,7 +210,7 @@ async function main() {
         {
           name: 'Fushimi Inari Shrine Thousand Torii Walk',
           description: 'Hike through vibrant vermilion shrine gates up Mount Inari.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 0.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e',
@@ -218,7 +218,7 @@ async function main() {
         {
           name: 'Arashiyama Bamboo Grove & Monkey Park Hike',
           description: 'Stroll beneath towering bamboo stalks and meet wild macaques.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 10.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26',
@@ -226,7 +226,7 @@ async function main() {
         {
           name: 'Gion Geisha District Evening Architecture Tour',
           description: 'Walk through preserved wooden machiya townhouses in search of maiko.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 25.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1578637387939-43c525550085',
@@ -234,7 +234,7 @@ async function main() {
         {
           name: 'Nishiki Market Kaiseki Food Walk',
           description: 'Sample over 10 traditional Kyoto specialties along the narrow covered market.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 55.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb',
@@ -242,7 +242,7 @@ async function main() {
         {
           name: 'Zen Garden Meditation at Ryoan-ji',
           description: 'Contemplate the famous rock garden for peace of mind.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 8.00,
           durationHours: 1.5,
           imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3',
@@ -259,7 +259,7 @@ async function main() {
         {
           name: 'Sagrada Familia Architectural Masterclass',
           description: 'Marvel at Antoni Gaudi masterpiece with audio-guided interior access.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 36.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4',
@@ -267,7 +267,7 @@ async function main() {
         {
           name: 'Park Guell Monumental Zone Ticket',
           description: 'Wander amidst colorful mosaic salamanders and panoramic city views.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 15.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1583422409516-2895a77efded',
@@ -275,7 +275,7 @@ async function main() {
         {
           name: 'Gothic Quarter Tapas & Wine Tasting Trail',
           description: 'Visit 4 authentic bodega taverns for patatas bravas, jamón, and sangria.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 60.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1515443961218-a51367888e4b',
@@ -283,7 +283,7 @@ async function main() {
         {
           name: 'Barceloneta Beach Stand-Up Paddleboarding',
           description: 'Catch sunrise waves off the Mediterranean coast.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 30.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
@@ -291,7 +291,7 @@ async function main() {
         {
           name: 'Sunset Sailing Yacht along Coastline',
           description: 'Relax with complimentary cava on a luxury catamaran.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 55.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee',
@@ -308,7 +308,7 @@ async function main() {
         {
           name: 'Statue of Liberty & Ellis Island Ferry',
           description: 'Visit America symbol of freedom and immigration history.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 30.00,
           durationHours: 4.0,
           imageUrl: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9',
@@ -316,7 +316,7 @@ async function main() {
         {
           name: 'Broadway Musical Ticket',
           description: 'Experience world-class live theater in the heart of Times Square.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 135.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1514306191717-452ec28c7814',
@@ -324,7 +324,7 @@ async function main() {
         {
           name: 'Greenwich Village Food & Pizza Safari',
           description: 'Bite into famous NY dollar slices, cannoli, and bagels.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 70.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
@@ -332,7 +332,7 @@ async function main() {
         {
           name: 'Central Park Bicycle Rental & Picnic',
           description: 'Ride through Bethesda Terrace, Strawberry Fields, and Belvedere Castle.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 25.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f',
@@ -340,7 +340,7 @@ async function main() {
         {
           name: 'Helicopter Skyline Flight over Manhattan',
           description: 'Thrilling aerial views over Brooklyn Bridge, Central Park, and Hudson River.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 220.00,
           durationHours: 0.5,
           imageUrl: 'https://images.unsplash.com/photo-1506966953377-3f925a26e07b',
@@ -357,7 +357,7 @@ async function main() {
         {
           name: 'Sydney Opera House Behind-the-Scenes Tour',
           description: 'Explore the architectural masterpiece and concert halls.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 42.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9',
@@ -365,7 +365,7 @@ async function main() {
         {
           name: 'Sydney Harbour BridgeClimb',
           description: 'Scale the iconic steel arch bridge for 360-degree harbor panoramas.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 260.00,
           durationHours: 3.5,
           imageUrl: 'https://images.unsplash.com/photo-1528072164453-f4e8ef0d475a',
@@ -373,7 +373,7 @@ async function main() {
         {
           name: 'Bondi to Coogee Coastal Walk',
           description: 'Scenic cliffside walking trail passing golden beaches and ocean pools.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 0.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
@@ -381,7 +381,7 @@ async function main() {
         {
           name: 'Surry Hills Craft Beer & Dining Safari',
           description: 'Discover trendy microbreweries and modern Aussie gastropubs.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 65.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b',
@@ -389,7 +389,7 @@ async function main() {
         {
           name: 'Taronga Zoo Ferry & Wildlife Encounter',
           description: 'Meet kangaroos and koalas with unbeatable harbor views.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 49.00,
           durationHours: 4.0,
           imageUrl: 'https://images.unsplash.com/photo-1534567153574-2b12153a87f0',
@@ -406,7 +406,7 @@ async function main() {
         {
           name: 'Giza Pyramids & Great Sphinx Guided Tour',
           description: 'Stand before the ancient Wonders of the Ancient World.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 35.00,
           durationHours: 4.0,
           imageUrl: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368',
@@ -414,7 +414,7 @@ async function main() {
         {
           name: 'Grand Egyptian Museum Artifact Experience',
           description: 'View King Tutankhamun golden treasures and pharaonic mummies.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 25.00,
           durationHours: 3.5,
           imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7',
@@ -422,7 +422,7 @@ async function main() {
         {
           name: 'Khan el-Khalili Bazaar Spice & Souk Tour',
           description: 'Haggle for brass lamps, papyrus art, and exotic spices.',
-          category: ActivityCategory.FOOD,
+          category: 'FOOD',
           cost: 20.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1515443961218-a51367888e4b',
@@ -430,7 +430,7 @@ async function main() {
         {
           name: 'Sunset Felucca Sail on the River Nile',
           description: 'Relax aboard a traditional wooden sailboat while the sun sets over Cairo.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 18.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee',
@@ -438,7 +438,7 @@ async function main() {
         {
           name: 'Quad Bike Safari around Desert Pyramids',
           description: 'Ride ATV dunes surrounding the ancient pyramid complex.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 45.00,
           durationHours: 2.0,
           imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
@@ -455,7 +455,7 @@ async function main() {
         {
           name: 'Christ the Redeemer & Corcovado Train',
           description: 'Ascend through Tijuca Forest to the iconic statue overlooking Guanabara Bay.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 30.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325',
@@ -463,7 +463,7 @@ async function main() {
         {
           name: 'Sugarloaf Mountain Cable Car Ride',
           description: 'Glide high above Rio beaches for spectacular sunset panoramic views.',
-          category: ActivityCategory.SIGHTSEEING,
+          category: 'SIGHTSEEING',
           cost: 32.00,
           durationHours: 2.5,
           imageUrl: 'https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f',
@@ -471,7 +471,7 @@ async function main() {
         {
           name: 'Copacabana & Ipanema Beach Lounge',
           description: 'Sip fresh caipirinhas and play beach volleyball.',
-          category: ActivityCategory.RELAXATION,
+          category: 'RELAXATION',
           cost: 15.00,
           durationHours: 3.0,
           imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
@@ -479,7 +479,7 @@ async function main() {
         {
           name: 'Lapa Steps & Samba Live Music Night',
           description: 'Experience authentic Brazilian samba rhythms in historic Lapa.',
-          category: ActivityCategory.CULTURE,
+          category: 'CULTURE',
           cost: 25.00,
           durationHours: 4.0,
           imageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819',
@@ -487,7 +487,7 @@ async function main() {
         {
           name: 'Tijuca Rainforest Jeep Adventure',
           description: 'Explore the world largest urban rainforest filled with waterfalls and toucans.',
-          category: ActivityCategory.ADVENTURE,
+          category: 'ADVENTURE',
           cost: 50.00,
           durationHours: 4.0,
           imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23',
@@ -537,17 +537,17 @@ async function main() {
             stopActivities: {
               create: [
                 {
-                  activityId: parisCity.activities[0].id, // Eiffel Tower
+                  activityId: parisCity.activities[0].id,
                   scheduledDate: new Date('2026-09-16T00:00:00Z'),
                   scheduledTime: '06:30 PM',
                 },
                 {
-                  activityId: parisCity.activities[1].id, // Louvre
+                  activityId: parisCity.activities[1].id,
                   scheduledDate: new Date('2026-09-17T00:00:00Z'),
                   scheduledTime: '10:00 AM',
                 },
                 {
-                  activityId: parisCity.activities[2].id, // Pastry Crawl
+                  activityId: parisCity.activities[2].id,
                   scheduledDate: new Date('2026-09-18T00:00:00Z'),
                   scheduledTime: '02:00 PM',
                 },
@@ -562,12 +562,12 @@ async function main() {
             stopActivities: {
               create: [
                 {
-                  activityId: romeCity.activities[0].id, // Colosseum
+                  activityId: romeCity.activities[0].id,
                   scheduledDate: new Date('2026-09-21T00:00:00Z'),
                   scheduledTime: '09:00 AM',
                 },
                 {
-                  activityId: romeCity.activities[2].id, // Pasta class
+                  activityId: romeCity.activities[2].id,
                   scheduledDate: new Date('2026-09-22T00:00:00Z'),
                   scheduledTime: '05:00 PM',
                 },

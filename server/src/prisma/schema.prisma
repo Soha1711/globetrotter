@@ -5,24 +5,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-// User Role Enum
-enum Role {
-  USER
-  ADMIN
-}
-
-// Activity Category Enum
-enum ActivityCategory {
-  SIGHTSEEING
-  FOOD
-  ADVENTURE
-  CULTURE
-  RELAXATION
-  OTHER
 }
 
 // User Entity
@@ -37,7 +21,7 @@ model User {
   country         String?
   additionalInfo  String?
   profilePhotoUrl String?
-  role            Role     @default(USER)
+  role            String   @default("USER") // "USER" | "ADMIN"
   createdAt       DateTime @default(now())
   trips           Trip[]
 
@@ -98,14 +82,14 @@ model Stop {
 
 // Activity Entity (Available activities in a City)
 model Activity {
-  id             String           @id @default(uuid())
+  id             String         @id @default(uuid())
   cityId         String
-  city           City             @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  city           City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
   name           String
   description    String?
-  category       ActivityCategory @default(OTHER)
-  cost           Decimal          @default(0.0) @db.Decimal(10, 2)
-  durationHours  Float            @default(1.0)
+  category       String         @default("OTHER") // "SIGHTSEEING" | "FOOD" | "ADVENTURE" | "CULTURE" | "RELAXATION" | "OTHER"
+  cost           Float          @default(0.0)
+  durationHours  Float          @default(1.0)
   imageUrl       String?
   stopActivities StopActivity[]
 
@@ -130,13 +114,13 @@ model StopActivity {
 
 // Budget Entity (One-to-One with Trip)
 model Budget {
-  id             String  @id @default(uuid())
-  tripId         String  @unique
-  trip           Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  transportCost  Decimal @default(0.0) @db.Decimal(10, 2)
-  stayCost       Decimal @default(0.0) @db.Decimal(10, 2)
-  activitiesCost Decimal @default(0.0) @db.Decimal(10, 2)
-  mealsCost      Decimal @default(0.0) @db.Decimal(10, 2)
+  id             String @id @default(uuid())
+  tripId         String @unique
+  trip           Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  transportCost  Float  @default(0.0)
+  stayCost       Float  @default(0.0)
+  activitiesCost Float  @default(0.0)
+  mealsCost      Float  @default(0.0)
 
   @@map("budgets")
 }

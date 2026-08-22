@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const healthRoutes = require('./routes/health.routes');
+const authRoutes = require('./routes/auth.routes');
 const { errorHandler } = require('./middleware/error.middleware');
 
 // Load environment variables
@@ -22,12 +23,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 
 // Root Welcome Endpoint
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to GlobeTrotter API Server',
-    healthCheck: '/api/health'
+    healthCheck: '/api/health',
+    authEndpoints: {
+      register: 'POST /api/auth/register',
+      login: 'POST /api/auth/login',
+      me: 'GET /api/auth/me'
+    }
   });
 });
 
