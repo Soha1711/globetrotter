@@ -167,8 +167,111 @@ const getTripById = async (req, res, next) => {
   }
 };
 
+/**
+ * @route   GET /api/trips/:id/budget
+ * @desc    Get computed budget breakdown for a trip
+ * @access  Private
+ */
+const getTripBudget = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const trip = await prisma.trip.findUnique({
+      where: { id },
+      include: {
+        budget: true,
+        stops: {
+          include: {
+            stopActivities: {
+              include: { activity: true }
+            }
+          }
+        }
+      }
+    });
+
+    if (!trip) {
+      return res.status(404).json({ success: false, message: 'Trip not found.' });
+    }
+
+    // Sum activity costs from all stops
+    let totalActivitiesCost = 0;
+    if (trip.stops) {
+      trip.stops.forEach(stop => {
+        stop.stopActivities?.forEach(sa => {
+          totalActivitiesCost += sa.activity?.cost || 0;
+        });
+      });
+    }
+
+    const budgetData = {
+      transportCost: trip.budget?.transportCost || 0,
+      stayCost: trip.budget?.stayCost || 0,
+      activitiesCost: totalActivitiesCost,
+      mealsCost: trip.budget?.mealsCost || 0,
+    };
+
+    const grandTotal = budgetData.transportCost + budgetData.stayCost + budgetData.activitiesCost + budgetData.mealsCost;
+
+    res.status(200).json({
+      success: true,
+      tripId: trip.id,
+      budget: budgetData,
+      grandTotal
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @route   PUT /api/trips/:id/budget
+ * @desc    Update budget estimates (transport/stay/meals)
+ * @access  Private
+ */
+const updateTripBudget = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { transportCost, stayCost, mealsCost } = req.body;
+
+    if (transportCost !== undefined && (isNaN(transportCost) || transportCost < 0)) {
+      return res.status(400).json({ success: false, message: 'transportCost must be a non-negative number.' });
+    }
+    if (stayCost !== undefined && (isNaN(stayCost) || stayCost < 0)) {
+      return res.status(400).json({ success: false, message: 'stayCost must be a non-negative number.' });
+    }
+    if (mealsCost !== undefined && (isNaN(mealsCost) || mealsCost < 0)) {
+      return res.status(400).json({ success: false, message: 'mealsCost must be a non-negative number.' });
+    }
+
+    const updated = await prisma.trip.update({
+      where: { id },
+      data: {
+        transportCost: transportCost !== undefined ? Number(transportCost) : undefined,
+        stayCost: stayCost !== undefined ? Number(stayCost) : undefined,
+        mealsCost: mealsCost !== undefined ? Number(mealsCost) : undefined,
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Budget updated successfully!',
+      budget: {
+        transportCost: updated.transportCost,
+        stayCost: updated.stayCost,
+        activitiesCost: updated.budget?.activitiesCost || 0,
+        mealsCost: updated.mealsCost,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createTrip,
   getUserTrips,
-  getTripById
+  getTripById,
+  getTripBudget,
+  updateTripBudget
 };

@@ -7,7 +7,8 @@ import Register from './pages/Register';
 import MainLanding from './pages/MainLanding';
 import CreateTrip from './pages/CreateTrip';
 import TripDetail from './pages/TripDetail';
-import TripBuilder from './pages/TripBuilder';
+import TripsScreen from './pages/TripsScreen';
+import ItineraryView from './pages/ItineraryView';
 
 export default function App() {
   return (
@@ -48,6 +49,22 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <TripBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trips"
+            element={
+              <ProtectedRoute>
+                <TripsScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trips/:tripId/view"
+            element={
+              <ProtectedRoute>
+                <ItineraryView />
               </ProtectedRoute>
             }
           />
