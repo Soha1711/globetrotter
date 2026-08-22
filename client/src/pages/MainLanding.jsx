@@ -105,6 +105,10 @@ export default function MainLanding() {
 
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
             <Link to="/" className="text-white font-semibold">Dashboard</Link>
+            <Link to="/trips" className="hover:text-white transition-colors">My Trips</Link>
+            <Link to="/search" className="hover:text-white transition-colors flex items-center gap-1.5">
+              <Compass className="w-4 h-4" /> Explore
+            </Link>
             <Link to="/trips/new" className="hover:text-white transition-colors">Plan Trip</Link>
           </nav>
 

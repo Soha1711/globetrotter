@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const healthRoutes = require('./routes/health.routes');
 const authRoutes = require('./routes/auth.routes');
+const activityRoutes = require('./routes/activity.routes');
 const cityRoutes = require('./routes/city.routes');
 const tripRoutes = require('./routes/trip.routes');
 const stopRoutes = require('./routes/stop.routes');
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/activities', activityRoutes);
 app.use('/api/cities', cityRoutes);
 app.use('/api/trips', tripRoutes);
 app.use('/api/stops', stopRoutes);
